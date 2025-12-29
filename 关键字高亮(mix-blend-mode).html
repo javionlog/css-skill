@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>关键字高亮(mix-blend-mode)</title>
+    <style>
+      ui-overlay {
+        position: absolute;
+        background: red;
+        mix-blend-mode: color;
+      }
+      [id] {
+        background: white;
+        /* color: gray; */
+      }
+    </style>
+  </head>
+  <body>
+    <input id="search" type="search" placeholder="输入内容搜索" />
+    <h6 id="target">
+      上面输入框可以输入任意这段内容中出现的文字或者单词，就会看到文字有高亮效果。但是，这种高亮效果既不是文字选中，也不是通过包裹标签元素实现的，而是直接覆盖在上面，然后通过叠加混合模式实现的。值
+      overlay 叠加混合模式适合浅色文字，如果是深色文字，可以使用
+      <i style="color: green">lighten</i>；如果要高亮背景，可以使用 difference。
+    </h6>
+    <script>
+      function getNodeAndOffset(wrapDom, start = 0, end = 0) {
+        const txtList = []
+        // 递归遍历，提取出所有文本节点
+        ;(function map(childNodes) {
+          ;[...childNodes].forEach(el =>
+            el.nodeName === '#text' ? txtList.push(el) : map(el.childNodes)
+          )
+        })(wrapDom.childNodes)
+        // 计算文本的位置区间 [0,3]、[3, 8]、[8,10]
+        const clips = txtList.reduce((arr, item, index) => {
+          const end = item.textContent.length + (arr[index - 1] ? arr[index - 1][2] : 0)
+          arr.push([item, end - item.textContent.length, end])
+          return arr
+        }, [])
+        // 查找满足条件的范围区间
+        const startNode = clips.find(el => start >= el[1] && start < el[2])
+        const endNode = clips.find(el => end >= el[1] && end < el[2])
+        return [startNode[0], start - startNode[1], endNode[0], end - endNode[1]]
+      }
+
+      function highlight() {
+        document.querySelectorAll('ui-overlay').forEach(overlay => overlay.remove())
+        const value = search.value.trim()
+        const { length } = value
+        if (!length) return
+        const arrMatchs = target.textContent.split(value)
+        if (arrMatchs.length > 1) {
+          let start = 0
+          arrMatchs.forEach((parts, index) => {
+            if (index === arrMatchs.length - 1) return
+            const range = document.createRange()
+            start += parts.length
+            // range.setStart(target.firstChild, start);
+            // range.setEnd(target.firstChild, start + length);
+            const nodes = getNodeAndOffset(target, start, start + length)
+            range.setStart(nodes[0], nodes[1])
+            range.setEnd(nodes[2], nodes[3])
+            const bound = range.getBoundingClientRect()
+            const eleOverlay = document.createElement('ui-overlay')
+            document.body.appendChild(eleOverlay)
+            eleOverlay.style.left = bound.left + 'px'
+            eleOverlay.style.top = bound.top + window.pageYOffset + 'px'
+            eleOverlay.style.width = bound.width + 'px'
+            eleOverlay.style.height = bound.height + 'px'
+            start += length
+          })
+        }
+      }
+      onresize = search.oninput = highlight
+    </script>
+  </body>
+</html>

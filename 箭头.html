@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .arrow {
+        display: inline-block;
+        margin-right: 8px;
+        width: 0;
+        height: 0;
+        border: 16px solid;
+        border-color: transparent #cddc39 transparent transparent;
+        position: relative;
+      }
+
+      .arrow::after {
+        content: '';
+        position: absolute;
+        right: -25px;
+        top: -16px;
+        border: 16px solid;
+        border-color: transparent #fff transparent transparent;
+      }
+
+      /* .arrow.bottom {
+        transform: rotate(270deg);
+      } */
+      #box {
+        font-family: PingFangSC-Regular, PingFang SC, Helvetica Neue, Helvetica, Hiragino Sans GB,
+          Microsoft YaHei, Arial, sans-serif;
+        box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        word-break: inherit;
+        line-height: 22px;
+        font-size: 14px;
+        white-space: nowrap;
+        font-weight: 400;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <div class="box-inner">
+        <div class="arrow bottom"></div>
+      </div>
+    </div>
+    <canvas id="canvas"></canvas>
+    <div id="box"></div>
+    <script>
+      const text1 = 'TESTBYMYSELF8'
+      const text2 = 'TESTWITH4PX29'
+      const canvas = document.querySelector('#canvas')
+      const context = canvas.getContext('2d')
+      context.font =
+        '14px PingFangSC-Regular, PingFang SC, Helvetica Neue, Helvetica, Hiragino Sans GB'
+      const canvasWidth1 = context.measureText(text1).width
+      const canvasWidth2 = context.measureText(text2).width
+      console.log(`${text1}|canvas:${canvasWidth1}\n`, `${text2}|canvas:${canvasWidth2}\n`)
+
+      const box = document.querySelector('#box')
+      box.innerText = text1
+      const boxWidth1 = window.getComputedStyle(box).width
+      box.innerText = text2
+      const boxWidth2 = window.getComputedStyle(box).width
+      console.log(`${text1}|box:${boxWidth1}\n`, `${text2}|box:${boxWidth2}\n`)
+    </script>
+  </body>
+</html>
