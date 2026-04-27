@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .container {
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+      .item {
+        padding: 1rem;
+        background-color: #18c5ff;
+        position: relative;
+      }
+
+      .item::before {
+        content: '';
+        display: block;
+        padding-bottom: 100%;
+      }
+
+      .item-inner {
+        position: absolute;
+        max-width: 100%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="item">
+        <div class="item-inner">1</div>
+      </div>
+      <div class="item">
+        <div class="item-inner">2</div>
+      </div>
+      <div class="item">
+        <div class="item-inner">3</div>
+      </div>
+    </div>
+  </body>
+</html>
